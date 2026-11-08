@@ -1,0 +1,93 @@
+"use client";
+
+import AudioSettingButton from "@/components/AudioSettingButton";
+import GraphicsSettingButton from "@/components/GraphicsSettingButton";
+import { DownloadIcon, MailIcon } from "@/components/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { useScrollContext } from "@/contexts/ScrollContext";
+import { useSettingsContext } from "@/contexts/SettingsContext";
+import {
+  AVATAR_IMG_SRC,
+  getResumeLink,
+} from "@/lib/constants";
+import { contactFormScrollProgress } from "@/lib/sections";
+
+// One language only (English)
+const language = "en";
+
+function TopBar() {
+  const { hasStartedExperience } = useSettingsContext();
+  const { goToScrollProgress } = useScrollContext();
+
+  return (
+    <header
+      // Hidden behind the startup screen until the experience starts
+      inert={!hasStartedExperience}
+      className="fixed top-0 left-0 w-full pt-[max(0.5rem,env(safe-area-inset-top))] short:pt-[max(0.25rem,env(safe-area-inset-top))] pb-2 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:px-8 z-40 justify-between flex items-center gap-2 pointer-events-none [&>*]:pointer-events-auto"
+    >
+      <div className="flex items-center gap-2.5 min-w-0">
+        {/* Name and role */}
+        <div className="group flex items-center gap-2 rounded-full pr-2 opacity-85">
+          <Avatar className="size-7 transition-transform group-hover:scale-110">
+            <AvatarImage
+              width={28}
+              height={28}
+              src={AVATAR_IMG_SRC}
+              alt=""
+            />
+            <AvatarFallback>LS</AvatarFallback>
+          </Avatar>
+          <span className="flex flex-col leading-tight max-sm:sr-only">
+            <span className="text-sm font-bold text-foreground">
+              Lokesh Saraswat
+            </span>
+            <span className="text-xs text-muted-foreground max-sm:hidden">
+              Full-Stack Developer
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1.5">
+        {/* Calls to action */}
+        <Button
+          asChild
+          variant="outline"
+          size="sm"
+          className="h-8 bg-background/50! max-[30rem]:px-2"
+        >
+          <a href={getResumeLink()} target="_blank" rel="noopener" download>
+            <DownloadIcon aria-hidden />
+            <span>
+              <span className="max-[24rem]:sr-only">CV</span>
+              <span className="sr-only"> (PDF)</span>
+            </span>
+          </a>
+        </Button>
+        <Button
+          size="sm"
+          className="h-8 bg-primary/85 hover:bg-primary border border-[color-mix(in_srgb,var(--primary)_70%,var(--foreground))] max-[30rem]:px-2"
+          onClick={() => goToScrollProgress(contactFormScrollProgress)}
+        >
+          <MailIcon aria-hidden className="max-[30rem]:hidden" />
+          Hire me
+        </Button>
+
+        <span className="w-px h-5 bg-foreground/20 mx-1 max-sm:hidden" aria-hidden />
+
+        {/* Settings buttons */}
+        <GraphicsSettingButton
+          buttonClassName="size-8 p-2 text-xs"
+          buttonVariant="outline"
+        />
+        <AudioSettingButton
+          buttonClassName="size-8 p-2 text-xs"
+          buttonVariant="outline"
+        />
+      </div>
+    </header>
+  );
+}
+
+export default TopBar;
